@@ -30,6 +30,7 @@ use App\Http\Controllers\api\ArchiveController;
 use App\Http\Controllers\api\ReportController;
 
 
+use App\Http\Controllers\api\NotificationController;
 
 
 /*
@@ -401,6 +402,15 @@ Route::apiResources([
     'publication' => PublicationController::class,
 ],[
     'except' => ['index']
+]);
+
+/**
+ * Notifications
+ */
+Route::apiResources([
+    'notifications' => NotificationController::class,
+],[
+    'only' => ['index']
 ]);
 
 Route::middleware(['auth:api'])->group(function () {
