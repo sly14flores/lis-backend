@@ -7,13 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 use Carbon\Carbon;
 
-class Origin extends Model
+class CommitteeMeeting extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'name',
-    ];    
+        'for_referral_id',
+        'meeting_date',
+    ];
 
     /**
      * @param $value
@@ -24,14 +30,8 @@ class Origin extends Model
         return Carbon::parse($value)->format('F j, Y h:i A');
     }
 
-    public function resolutions()
+    public function for_referrals()
     {
-        return $this->belongsToMany(Resolution::class)->withPivot('date_furnished');
+        return $this->belongsTo(ForReferral::class,'for_referral_id','id');
     }
-
-    public function ordinances()
-    {
-        return $this->belongsToMany(Ordinance::class)->withPivot('date_furnished');
-    }
-
 }

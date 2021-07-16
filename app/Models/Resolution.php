@@ -50,4 +50,9 @@ class Resolution extends Model
         // return $this->belongsTo(Group::class,'group_id','id');
         return $this->belongsToMany(ForReferral::class);
     }
+
+    public function origins()
+    {
+        return $this->belongsToMany(Origin::class)->withPivot('date_furnished');
+    }
 }

@@ -61,4 +61,9 @@ class Ordinance extends Model
     {
         return $this->hasOne(Publication::class,'ordinance_id','id');
     }
+
+    public function origins()
+    {
+        return $this->belongsToMany(Origin::class)->withPivot('date_furnished');
+    }
 }

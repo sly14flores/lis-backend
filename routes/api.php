@@ -23,11 +23,16 @@ use App\Http\Controllers\api\EndorsementController;
 use App\Http\Controllers\api\ResolutionController;
 use App\Http\Controllers\api\OrdinanceController;
 use App\Http\Controllers\api\AppropriationController;
+use App\Http\Controllers\api\PublicHearingController;
+use App\Http\Controllers\api\CommitteeHearingController;
+use App\Http\Controllers\api\CommitteeMeetingController;
 
 //others
 use App\Http\Controllers\api\PublicationController;
 use App\Http\Controllers\api\ArchiveController;
 use App\Http\Controllers\api\ReportController;
+use App\Http\Controllers\api\FurnishResolutionController;
+use App\Http\Controllers\api\FurnishOrdinanceController;
 
 
 
@@ -81,6 +86,7 @@ Route::prefix('selections')->group(function() {
 Route::prefix('communication_status')->group(function () {
     Route::get('approve_refer', [CommunicationStatusController::class, 'approveRef']);
     Route::get('endorsements', [CommunicationStatusController::class, 'endorsements']);
+    Route::get('public_hearings', [CommunicationStatusController::class, 'publicHearings']);
     Route::get('committee_reports', [CommunicationStatusController::class, 'committeeReports']);
     Route::get('adopt_reports', [CommitteeReportController::class, 'adoptReports']);
     Route::get('resolutions', [CommunicationStatusController::class, 'resolutions']);
@@ -88,8 +94,8 @@ Route::prefix('communication_status')->group(function () {
     Route::get('third_readings', [CommunicationStatusController::class, 'thirdReadings']);
     Route::get('ordinances', [CommunicationStatusController::class, 'ordinances']);
     Route::get('appropriation_ordinances', [CommunicationStatusController::class, 'appropriations']);
-    Route::get('furnish_ordinance', [CommunicationStatusController::class, 'furnishOrdinance']);
-    Route::get('furnish_resolution', [CommunicationStatusController::class, 'furnishResolution']);
+    Route::get('furnish_ordinances', [CommunicationStatusController::class, 'furnishOrdinance']);
+    Route::get('furnish_resolutions', [CommunicationStatusController::class, 'furnishResolution']);
     Route::get('publish', [CommunicationStatusController::class, 'publish']);
     Route::put('furnished/{id}', [CommunicationStatusController::class, 'furnished']);
     Route::put('not_for_publication/{id}', [CommunicationStatusController::class, 'notForPublication']);
@@ -399,6 +405,81 @@ Route::apiResources([
 
 Route::apiResources([
     'publication' => PublicationController::class,
+],[
+    'except' => ['index']
+]);
+
+/**
+ * Furnish Resolution
+ */
+Route::apiResources([
+    'furnish_resolutions' => FurnishResolutionController::class,
+],[
+    'only' => ['index']
+]);
+
+Route::apiResources([
+    'furnish_resolution' => FurnishResolutionController::class,
+],[
+    'except' => ['index']
+]);
+
+/**
+ * Furnish Ordinances
+ */
+Route::apiResources([
+    'furnish_ordinances' => FurnishOrdinanceController::class,
+],[
+    'only' => ['index']
+]);
+
+Route::apiResources([
+    'furnish_ordinance' => FurnishOrdinanceController::class,
+],[
+    'except' => ['index']
+]);
+
+/**
+ * Public Hearing
+ */
+Route::apiResources([
+    'public_hearings' => PublicHearingController::class,
+],[
+    'only' => ['index']
+]);
+
+Route::apiResources([
+    'public_hearing' => PublicHearingController::class,
+],[
+    'except' => ['index']
+]);
+
+/**
+ * Committee Hearing
+ */
+Route::apiResources([
+    'public_hearings' => PublicHearingController::class,
+],[
+    'only' => ['index']
+]);
+
+Route::apiResources([
+    'public_hearing' => PublicHearingController::class,
+],[
+    'except' => ['index']
+]);
+
+/**
+ * Committee Meeeting
+ */
+Route::apiResources([
+    'public_hearings' => PublicHearingController::class,
+],[
+    'only' => ['index']
+]);
+
+Route::apiResources([
+    'public_hearing' => PublicHearingController::class,
 ],[
     'except' => ['index']
 ]);

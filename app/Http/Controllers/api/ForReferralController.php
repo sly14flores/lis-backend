@@ -128,8 +128,7 @@ class ForReferralController extends Controller
 		$validator = Validator::make($request->all(), $rules);
 
 		if ($validator->fails()) {
-			return $validator->errors();
-			return $this->jsonErrorDataValidation();
+			return $this->jsonErrorDataValidation($validator->errors());
 		}
 
 		$data = $validator->valid();
@@ -170,8 +169,7 @@ class ForReferralController extends Controller
 				$type = 3;//Resolution
 				$dueDate = $dueDate->addDays(30);
 			}
-			$for_referral->due_date = $dueDate;
-			$for_referral->save();
+			
 			$status = new CommunicationStatus;
 			$status->fill([
 				'type' => $type
@@ -179,6 +177,9 @@ class ForReferralController extends Controller
 
 			$for_referral->comm_status()->save($status);
 
+			//due date
+			$for_referral->due_date = $dueDate;
+			$for_referral->save();
 			// Sync in pivot table
 			
 			$syncs = [];
@@ -280,7 +281,7 @@ class ForReferralController extends Controller
 		$validator = Validator::make($request->all(), $rules);
 
 		if ($validator->fails()) {
-			return $this->jsonErrorDataValidation();
+			return $this->jsonErrorDataValidation($validator->errors());
 		}
 
 		$data = $validator->valid();
@@ -303,6 +304,24 @@ class ForReferralController extends Controller
 				$for_referral->file = $pdf;
 				$for_referral->save();
 			}
+
+			if($data['category_id'] == 1) {
+				$type = 1;//Draft Ordinance
+				// $dueDate = $dueDate->addDays(90);
+			}else if($data['category_id'] == 2) {
+				$type = 2;//Appropriation Ordinance
+				// $dueDate = $dueDate->addDays(90);
+			}else {
+				$type = 3;//Resolution
+				// $dueDate = $dueDate->addDays(30);
+			}
+			
+			$status = CommunicationStatus::where('for_referral_id',$id)->first();
+			$status->fill([
+				'type' => $type
+			]);
+
+			$for_referral->comm_status()->save($status);
 
 			// Sync in pivot table
 			$syncs = [];
