@@ -35,6 +35,7 @@ use App\Http\Controllers\api\FurnishResolutionController;
 use App\Http\Controllers\api\FurnishOrdinanceController;
 
 
+use App\Http\Controllers\api\NotificationController;
 
 
 /*
@@ -410,14 +411,19 @@ Route::apiResources([
 ]);
 
 /**
- * Furnish Resolution
+ * Notifications
  */
 Route::apiResources([
-    'furnish_resolutions' => FurnishResolutionController::class,
+    'notifications' => NotificationController::class,
 ],[
     'only' => ['index']
 ]);
 
+/**
+ *  Furnish Resolution
+ */
+Route::apiResources([
+   'furnish_resolutions' => FurnishResolutionController::class,
 Route::apiResources([
     'furnish_resolution' => FurnishResolutionController::class,
 ],[
