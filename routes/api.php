@@ -458,13 +458,13 @@ Route::apiResources([
  * Committee Hearing
  */
 Route::apiResources([
-    'public_hearings' => PublicHearingController::class,
+    'committee_hearings' => CommitteeHearingController::class,
 ],[
     'only' => ['index']
 ]);
 
 Route::apiResources([
-    'public_hearing' => PublicHearingController::class,
+    'committee_hearing' => CommitteeHearingController::class,
 ],[
     'except' => ['index']
 ]);
@@ -473,13 +473,13 @@ Route::apiResources([
  * Committee Meeeting
  */
 Route::apiResources([
-    'public_hearings' => PublicHearingController::class,
+    'committee_meetings' => CommitteeMeetingController::class,
 ],[
     'only' => ['index']
 ]);
 
 Route::apiResources([
-    'public_hearing' => PublicHearingController::class,
+    'committee_meeting' => CommitteeMeetingController::class,
 ],[
     'except' => ['index']
 ]);

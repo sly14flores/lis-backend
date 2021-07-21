@@ -99,6 +99,21 @@ class ForReferral extends Model
         return $this->hasOne(Appropriation::class);
     }
 
+    public function committee_meetings()
+    {
+        return $this->hasMany(CommitteeMeeting::class);
+    }
+
+    public function committee_hearings()
+    {
+        return $this->hasMany(CommitteeHearing::class);
+    }
+
+    public function public_hearings()
+    {
+        return $this->hasMany(PublicHearing::class);
+    }
+
     public function comm_status()
     {
         return $this->hasOne(CommunicationStatus::class);

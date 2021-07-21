@@ -21,6 +21,9 @@ class CommitteeReportResource extends JsonResource
             return[
                 'id' => $for_referral['id'],
                 'subject' => $for_referral['subject'],
+                'committee_meeting' => $for_referral->committee_meetings->pluck('meeting_date'),
+                'committee_hearing' => $for_referral->committee_hearings->pluck('hearing_date'),
+                'public_hearing' => $for_referral->public_hearings->pluck('hearing_date')
             ];
         });
         $committees = $for_referrals->map(function ($for_referral) {

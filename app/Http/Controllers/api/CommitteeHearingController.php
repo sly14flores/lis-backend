@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 use App\Customs\Messages;
 use App\Models\CommitteeHearing;
@@ -37,11 +39,16 @@ class CommitteeHearingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $filters = $request->all();
         $for_referral_id = (is_null($filters['for_referral_id']))?null:$filters['for_referral_id'];
         $hearing_date = (is_null($filters['hearing_date']))?null:$filters['hearing_date'];
+        $lead_committee_id = (is_null($filters['lead_committee_id']))?null:$filters['lead_committee_id'];
+        $joint_committee_id = (is_null($filters['joint_committee_id']))?null:$filters['joint_committee_id'];
+        $subject = (is_null($filters['subject']))?null:$filters['subject'];
+        $category_id = (is_null($filters['category_id']))?null:$filters['category_id'];
+		$origin_id = (is_null($filters['origin_id']))?null:$filters['origin_id'];
 
         $wheres = [];
         if ($for_referral_id!=null) {
@@ -52,9 +59,40 @@ class CommitteeHearingController extends Controller
             $wheres[] = ['hearing_date', 'LIKE', "%{$hearing_date}%"];
         }
 
-        $hearing = CommitteeHeairng::where($wheres)->orderBy('id','desc')->paginate(10);
+        $hearing = CommitteeHearing::where($wheres);
 
-        $data = new CommitteeHeairngListResourceCollection($hearing);
+        if ($subject!=null) {
+			$hearing->whereHas('for_referrals', function(Builder $query) use ($subject) {
+				$query->where([['for_referrals.subject','LIKE', "%{$subject}%"]]);
+			});
+		}
+
+        if ($category_id!=null) {
+			$hearing->whereHas('for_referrals', function(Builder $query) use ($category_id) {
+				$query->where([['for_referrals.category_id', $category_id]]);
+			});
+		}
+
+        if ($origin_id!=null) {
+			$hearing->whereHas('for_referrals', function(Builder $query) use ($origin_id) {
+				$query->where([['for_referrals.origin_id', $origin_id]]);
+			});
+		}
+
+        if ($lead_committee_id!=null) {
+			$hearing->whereHas('for_referrals.committees', function(Builder $query) use ($lead_committee_id) {
+				$query->where([['committee_for_referral.committee_id', $lead_committee_id],['committee_for_referral.lead_committee',true]]);
+			});
+		}
+		if ($joint_committee_id!=null) {
+			$hearing->whereHas('for_referrals.committees', function(Builder $query) use ($joint_committee_id) {
+				$query->where([['committee_for_referral.committee_id', $joint_committee_id],['committee_for_referral.joint_committee',true]]);
+			});
+		}
+
+        $hearing = $hearing->orderBy('id','desc')->paginate(10);
+
+        $data = new CommitteeHearingListResourceCollection($hearing);
 
         return $this->jsonSuccessResponse($data, $this->http_code_ok);
     }
@@ -90,7 +128,7 @@ class CommitteeHearingController extends Controller
 
         $data = $validator->valid();
         
-        $hearing = new CommitteeHeairng;
+        $hearing = new CommitteeHearing;
 		$hearing->fill($data);
         $hearing->save();
 
@@ -109,13 +147,13 @@ class CommitteeHearingController extends Controller
             return $this->jsonErrorInvalidParameters();
         }
 
-        $hearing = CommitteeHeairng::find($id);
+        $hearing = CommitteeHearing::find($id);
 
         if (is_null($hearing)) {
 			return $this->jsonErrorResourceNotFound();
         }
 
-		$data = new CommitteeHeairngResource($hearing);
+		$data = new CommitteeHearingResource($hearing);
 
         return $this->jsonSuccessResponse($data, $this->http_code_ok);
     }
@@ -144,7 +182,7 @@ class CommitteeHearingController extends Controller
             return $this->jsonErrorInvalidParameters();
         }
 
-        $hearing = CommitteeHeairng::find($id);
+        $hearing = CommitteeHearing::find($id);
 
         if (is_null($hearing)) {
 			return $this->jsonErrorResourceNotFound();
@@ -180,7 +218,7 @@ class CommitteeHearingController extends Controller
             return $this->jsonErrorInvalidParameters();
         }
 
-        $hearing = CommitteeHeairng::find($id);
+        $hearing = CommitteeHearing::find($id);
 
         if (is_null($hearing)) {
 			return $this->jsonErrorResourceNotFound();

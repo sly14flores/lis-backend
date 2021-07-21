@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 use App\Customs\Messages;
 use App\Models\CommitteeMeeting;
@@ -37,11 +39,16 @@ class CommitteeMeetingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $filters = $request->all();
         $for_referral_id = (is_null($filters['for_referral_id']))?null:$filters['for_referral_id'];
         $meeting_date = (is_null($filters['meeting_date']))?null:$filters['meeting_date'];
+        $subject = (is_null($filters['subject']))?null:$filters['subject'];
+        $lead_committee_id = (is_null($filters['lead_committee_id']))?null:$filters['lead_committee_id'];
+        $joint_committee_id = (is_null($filters['joint_committee_id']))?null:$filters['joint_committee_id'];
+        $category_id = (is_null($filters['category_id']))?null:$filters['category_id'];
+		$origin_id = (is_null($filters['origin_id']))?null:$filters['origin_id'];
 
         $wheres = [];
         if ($for_referral_id!=null) {
@@ -52,7 +59,38 @@ class CommitteeMeetingController extends Controller
             $wheres[] = ['meeting_date', 'LIKE', "%{$meeting_date}%"];
         }
 
-        $meeting = CommitteeMeeting::where($wheres)->orderBy('id','desc')->paginate(10);
+        $meeting = CommitteeMeeting::where($wheres);
+
+        if ($subject!=null) {
+			$meeting->whereHas('for_referrals', function(Builder $query) use ($subject) {
+				$query->where([['for_referrals.subject','LIKE', "%{$subject}%"]]);
+			});
+		}
+
+        if ($category_id!=null) {
+			$meeting->whereHas('for_referrals', function(Builder $query) use ($category_id) {
+				$query->where([['for_referrals.category_id', $category_id]]);
+			});
+		}
+
+        if ($origin_id!=null) {
+			$meeting->whereHas('for_referrals', function(Builder $query) use ($origin_id) {
+				$query->where([['for_referrals.origin_id', $origin_id]]);
+			});
+		}
+
+        if ($lead_committee_id!=null) {
+			$meeting->whereHas('for_referrals.committees', function(Builder $query) use ($lead_committee_id) {
+				$query->where([['committee_for_referral.committee_id', $lead_committee_id],['committee_for_referral.lead_committee',true]]);
+			});
+		}
+		if ($joint_committee_id!=null) {
+			$meeting->whereHas('for_referrals.committees', function(Builder $query) use ($joint_committee_id) {
+				$query->where([['committee_for_referral.committee_id', $joint_committee_id],['committee_for_referral.joint_committee',true]]);
+			});
+		}
+
+        $meeting = $meeting->orderBy('id','desc')->paginate(10);
 
         $data = new CommitteeMeetingListResourceCollection($meeting);
 

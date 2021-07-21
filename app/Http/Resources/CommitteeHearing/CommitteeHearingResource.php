@@ -4,7 +4,7 @@ namespace App\Http\Resources\CommitteeHearing;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CommitteeHearingtResource extends JsonResource
+class CommitteeHearingResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

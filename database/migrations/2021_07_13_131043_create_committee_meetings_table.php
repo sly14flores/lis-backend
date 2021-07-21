@@ -17,7 +17,7 @@ class CreateCommitteeMeetingsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('for_referral_id')->nullable();
             $table->foreign('for_referral_id')->references('id')->on('for_referrals')->constrained()->onUpdate('no action')->onDelete('cascade');
-            $table->date('metting_date')->nullable();
+            $table->date('meeting_date')->nullable();
             $table->timestamps();
         });
     }

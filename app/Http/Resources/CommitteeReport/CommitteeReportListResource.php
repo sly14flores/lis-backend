@@ -23,6 +23,9 @@ class CommitteeReportListResource extends JsonResource
             return[
                 'id' => $for_referral['id'],
                 'subject' => $for_referral['subject'],
+                'committee_meeting' => $for_referral->committee_meetings->pluck('meeting_date'),
+                'committee_hearing' => $for_referral->committee_hearings->pluck('hearing_date'),
+                'public_hearing' => $for_referral->public_hearings->pluck('hearing_date')
             ];
         });
         $committees = $for_referrals->map(function ($for_referral) {
@@ -51,7 +54,7 @@ class CommitteeReportListResource extends JsonResource
             'date_received' => $this->date_received,
             'agenda_date' => $this->agenda_date,
             'remarks' => $this->remarks,
-            'meeting_date' => $this->meeting_date,
+            // 'meeting_date' => $this->for_referral
             'date_created' => $this->created_at,
         ];
     }

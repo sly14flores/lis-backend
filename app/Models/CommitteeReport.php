@@ -19,7 +19,6 @@ class CommitteeReport extends Model
     protected $fillable = [
         'date_received',
         'agenda_date',
-        'meeting_date',
         'archive',
         'file'
     ];

@@ -151,7 +151,6 @@ class CommitteeReportController extends Controller
             'date_received' => 'date ',
             'agenda_date' => 'date',
             'remarks' => 'required|array',
-            'meeting_date' => 'date',
             'pdf' => 'required|mimes:pdf|max:10000000'
         ];
 
@@ -272,7 +271,6 @@ class CommitteeReportController extends Controller
             'date_received' => 'date ',
             'agenda_date' => 'date',
             'remarks' => 'required|array',
-            'meeting_date' => 'date',
             'pdf' => 'mimes:pdf|max:10000000'
         ];
 
