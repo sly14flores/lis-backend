@@ -424,6 +424,9 @@ Route::apiResources([
  */
 Route::apiResources([
    'furnish_resolutions' => FurnishResolutionController::class,
+],[
+    'only' => ['index']
+]);
 Route::apiResources([
     'furnish_resolution' => FurnishResolutionController::class,
 ],[
